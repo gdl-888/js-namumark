@@ -332,7 +332,7 @@ function HTMLRenderer(_options) {
                             macroContent += `<div class="wiki-toc-item wiki-toc-item-indent-${curHeading.level}"><a href="#heading-${j+1}">${hLevels[curHeading.level]}.</a> ${curHeading.value}</div>`;
                             lastLevel = curHeading.level;
                         }
-                        macroContent += '</div></div>';
+                        macroContent += '</div>';
                         return mapcb(null, macroContent);
                     case 'include':
                         if(typeof item.options === 'undefined' || item.options.length === 0)
