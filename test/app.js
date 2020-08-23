@@ -19,6 +19,8 @@ let doc = {
     }) : ''
 }
 app.use(express.static(__dirname + '/static'))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     if (doc.exists('MainPage'))
         res.redirect('/wiki/MainPage');
@@ -32,10 +34,7 @@ app.get('/edit/:name', (req, res) => {
         wikitext: doc.exists(name) ? doc.read(name) : '' 
     });
 })
-app.post('/edit/:name', bodyParser.urlencoded({
-    limit: 999999999999,
-    type: 'application/x-www-form-urlencoded'
-}), (req, res) => {
+app.post('/edit/:name', (req, res) => {
     let wikitext = req.body.wikitext.replace(/\r\n/g, '\n');
     let name = req.params.name;
     doc.write(name, wikitext);
@@ -58,6 +57,7 @@ app.get('/wiki/:name', (req, res) => {
             html,
             categories
         } = renderResults;
+		
         res.render('wiki', {
             title: name,
             //parseResult: require('util').inspect(parseResult, {showHidden: false, depth: null, maxArrayLength: null}),
@@ -67,7 +67,7 @@ app.get('/wiki/:name', (req, res) => {
     });
 });
 if (!fs.existsSync(__dirname + '/docs'))
-    fs.mkdir(__dirname + '/docs');
+    fs.mkdir(__dirname + '/docs', () => {});
 app.listen(3132, () => {
     console.log('listening on port 3132');
 })
